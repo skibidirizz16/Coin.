@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>STRESS OUT GUYS</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+            background: linear-gradient(to bottom, #1e3c72, #2a5298);
+        }
+
+        #game-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .star {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: gold;
+            box-shadow: 0 0 20px gold;
+            animation: float 3s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0); }
+        }
+
+        @keyframes vanish {
+            0% { 
+                transform: scale(1) rotate(0deg); 
+                opacity: 1;
+            }
+            50% { 
+                transform: scale(0.5) rotate(180deg); 
+                opacity: 0.5;
+            }
+            100% { 
+                transform: scale(0) rotate(360deg); 
+                opacity: 0;
+            }
+        }
+
+        #score-board, #timer {
+            position: absolute;
+            top: 10px;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-size: 18px;
+            color: #333;
+        }
+
+        #score-board {
+            left: 10px;
+        }
+
+        #timer {
+            right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div id="game-container">
+        <div id="score-board">Score: 0</div>
+        <div id="timer">Time: 2:00</div>
+    </div>
+
+    <script>
+        const gameContainer = document.getElementById('game-container');
+        const scoreBoard = document.getElementById('score-board');
+        const timerElement = document.getElementById('timer');
+        let score = 0;
+        let timeRemaining = 120; // 2 minutes in seconds
+
+        function updateTimer() {
+            const minutes = Math.floor(timeRemaining / 60);
+            const seconds = timeRemaining % 60;
+            timerElement.textContent = `Time: ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+
+            if (timeRemaining > 0) {
+                timeRemaining--;
+            } else {
+                endGame();
+            }
+        }
+
+        function endGame() {
+            alert(`Time's up! Your final score is ${score}.`);
+            window.location.reload(); // Reload the game
+        }
+
+        function createStar() {
+            const star = document.createElement('div');
+            star.classList.add('star');
+
+            // Randomize position
+            const x = Math.random() * (window.innerWidth - 50);
+            const y = Math.random() * (window.innerHeight - 50);
+
+            star.style.left = `${x}px`;
+            star.style.top = `${y}px`;
+
+            // Add click event to animate the star disappearing, increase score, and respawn
+            star.addEventListener('click', () => {
+                score++;
+                scoreBoard.textContent = `Score: ${score}`;
+
+                // Apply vanish animation
+                star.style.animation = 'vanish 0.5s forwards'; // Reduced vanish animation to 0.5 seconds
+                
+                // Remove the star after the animation ends
+                setTimeout(() => {
+                    gameContainer.removeChild(star);
+                    createStar(); // Respawn immediately after vanish
+                }, 500); // Match the duration of vanish animation
+            });
+
+            gameContainer.appendChild(star);
+        }
+
+        // Create multiple stars
+        createStar();
+        createStar();
+        createStar();
+        createStar();
+        createStar();
+        createStar();
+        createStar();
+        createStar();
+        createStar();
+        createStar();
+
+        // Start the timer
+        setInterval(updateTimer, 1000);
+    </script>
+</body>
+</html>
